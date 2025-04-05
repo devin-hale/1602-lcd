@@ -2,7 +2,7 @@ ENTRY(_reset)
 MEMORY
 {
 	flash (rx) : ORIGIN = 0x08000000, LENGTH = 512K
-    sram (wx) : ORIGIN = 0x20000000, LENGTH = 128K
+    sram (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 _Min_Heap_Size = 0x400;
 _Min_Stack_Size = 0x900;

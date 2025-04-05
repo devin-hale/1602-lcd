@@ -1,4 +1,4 @@
-BasedOnStyle: LLVM
+BasedOnStyle: llvm
 IndentWidth: 4
 AllowShortBlocksOnASingleLine: Always
 AllowShortFunctionsOnASingleLine: All

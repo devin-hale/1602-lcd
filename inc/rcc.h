@@ -1,0 +1,13 @@
+#pragma once
+
+#include <stdint.h>
+#define RCC_BASE 0x40023800
+
+struct rcc {
+    volatile uint32_t CR, PLL_CFGR, CFGR, CIR, AHB1RSTR, AHB2RSTR, AHB3RSTR, R0,
+        APB1RSTR, APB2RSTR, R1, R2, AHB1ENR, AHB2ENR, AHB3ENR, R3, APB1ENR, APB2ENR, R4, R5,
+        AHB1LPENR, AHB2LPENR, AHB3LPENR, R6, APB1LPENR, APB2LPENR, R7, R8, BDCR,
+        CSR, R9, R10, SSCGR, PLL_I2S_CFGR, PLL_SAI_CFGR, DCK_CFGR, CK_GATENR,
+        DCK_CFGR2;
+};
+#define RCC ((struct rcc *)RCC_BASE)

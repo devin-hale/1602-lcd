@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 4.0.0)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
-set(CMAKE_TOOLCHAIN_FILE ${PROJECT_SOURCE_DIR}/toolchain.cmake)
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/toolchain.cmake)
 
 project(lcd-1602 VERSION 0.0.1)
 
@@ -10,10 +10,8 @@ set(ELF firmware.elf)
 
 enable_language(ASM)
 
-add_executable(${ELF}
-	src/startup.c
-	src/main.c
-)
+file(GLOB_RECURSE sources src/*.c)
+add_executable(${ELF} ${sources})
 
 target_include_directories(${ELF}
 	PUBLIC
@@ -64,4 +62,4 @@ target_compile_options(${ELF} PUBLIC
   	-Wno-unused-const-variable 
 )
 
-
+file(COPY ${CMAKE_SOURCE_DIR}/openocd/openocd.cfg DESTINATION ${CMAKE_BINARY_DIR})

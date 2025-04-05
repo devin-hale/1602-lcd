@@ -7,9 +7,9 @@ cd build && \
 make && \
 
 if [[ $1 == "flash" ]]; then
-	openocd -f "$OCD_DIR/openocd.cfg"
+	openocd
 elif [[ $1 == "debug" ]]; then
-	openocd -f "$OCD_DIR/debug.cfg"
+	openocd -f debug.cfg
 fi
 
 cd ..
