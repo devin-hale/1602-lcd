@@ -1,8 +1,15 @@
 #!/bin/bash
 
-rm -fr ./build && \
-cmake -DCMAKE_TOOLCHAIN_FILE=./toolchain.cmake -B ./build && \
+OCD_DIR="../openocd"
+
+cmake -B ./build && \
 cd build && \
 make && \
-openocd && \
+
+if [[ $1 == "flash" ]]; then
+	openocd -f "$OCD_DIR/openocd.cfg"
+elif [[ $1 == "debug" ]]; then
+	openocd -f "$OCD_DIR/debug.cfg"
+fi
+
 cd ..

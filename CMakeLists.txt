@@ -1,47 +1,67 @@
-cmake_minimum_required(VERSION 3.31)
+cmake_minimum_required(VERSION 4.0.0)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-project(lcd-1602)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED True)
+set(CMAKE_TOOLCHAIN_FILE ${PROJECT_SOURCE_DIR}/toolchain.cmake)
 
-set(ELF main.elf)
+project(lcd-1602 VERSION 0.0.1)
+
+set(ELF firmware.elf)
 
 enable_language(ASM)
-set(STARTUP_FILE "startup.c")
 
 add_executable(${ELF}
-	${STARTUP_FILE}
+	src/startup.c
 	src/main.c
 )
 
-set_target_properties(
-  ${ELF}
-  PROPERTIES
-  LINK_FLAGS
-  "-T${PROJECT_SOURCE_DIR}/stm32f446.ld \
-   -mthumb -mcpu=cortex-m4 \
-   -Wl,--no-warn-rwx-segment \
-   -Wl,--gc-sections \
-   -Wl,-Map=${PROJECT_NAME}.map")
+target_include_directories(${ELF}
+	PUBLIC
+	${PROJECT_SOURCE_DIR}/inc
+)
+
+target_link_options(${ELF} PUBLIC
+	-T${PROJECT_SOURCE_DIR}/linker.ld # specify linker script
+	-mthumb
+	-mcpu=cortex-m4
+	-Wl,--no-warn-rwx-segment
+	-Wl,--gc-sections # prune unused code, requires -ffunction-sections and -fdata-sections flag in compiler
+	-Wl,-Map=${PROJECT_NAME}.map # creates section mapping for debugging
+)
 
 target_compile_options(${ELF} PUBLIC
-  -Wall 
-  -g 
-  -std=gnu99 
-  -Os
-  -mthumb
-  -mcpu=cortex-m4
-  -mfloat-abi=soft
-  -mlittle-endian
-  -ffunction-sections 
-  -fdata-sections
-  -Werror 
-  -Wstrict-prototypes 
-  -Warray-bounds 
-  -fno-strict-aliasing 
-  -Wno-unused-const-variable 
-  -specs=nano.specs 
-  -specs=nosys.specs)
+	# -- General Options --
+  	-Wall 
+  	-g3 # debug information level 3
+  	-Os # optimize for size
+	# place each function or data item into its own section
+	# allows for optimization in linkage
+	-ffunction-sections
+  	-fdata-sections
+	# specifies gnu libaries to link against
+	# nano = pruned down standard lib
+  	-specs=nano.specs 
+  	-specs=nosys.specs
 
-file(COPY
-  openocd.cfg
-  DESTINATION
-  ${CMAKE_BINARY_DIR})
+	# -- ARM Options --
+  	-mthumb # compressed 16bit thumb state
+  	-mcpu=cortex-m4 # specify architecture
+	# floating point handling. stm32f4xx supports single precision.
+	# 'soft' for software, 'hard' for hardware
+  	-mfloat-abi=soft 
+  	-mlittle-endian  # obvious, set to little endian
+
+	# -- Warning/Error Options ---
+	-Wall
+	-Wextra
+  	-Werror # warnings returned as errors
+	-Wundef
+	-Wshadow
+	-Wdouble-promotion
+	-Wformat-truncation
+	-Wconversion
+  	-fno-strict-aliasing 
+  	-Wno-unused-const-variable 
+)
+
+

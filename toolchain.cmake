@@ -1,7 +1,6 @@
 # Per cmake docs, 'Generic' used for "Some platforms, e.g. bare metal embedded devices"
 set(CMAKE_SYSTEM_NAME Generic)
 
-# Tells CMake to utilize ARM toolchain
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
 set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
