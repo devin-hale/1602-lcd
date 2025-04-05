@@ -31,27 +31,27 @@ void _svcall() WEAK_DEFAULT;
 void _debugmonitor() WEAK_DEFAULT;
 // reserved
 void _pendsv() WEAK_DEFAULT;
-void _systick() WEAK_DEFAULT;
+extern void _systick();
 
 extern void _estack();
 __attribute__((section(".vector_table"))) void (*const table[16 + 96])() = {
-    _estack, _reset,  _nmi,     _hardfault, _memory, _busfault, _usagefault,
-    0,       0,       0,        0,          0,       _svcall,   _debugmonitor,
-    0,       _pendsv, _systick,
+    _estack, _reset,   _nmi,  _hardfault, _memory, _busfault,     _usagefault,
+    0,       0,        0,     0,          _svcall, _debugmonitor, 0,
+    _pendsv, _systick,
 
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,      _null,   _null,     _null,
-    _null,   _null,   _null,    _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,      _null,   _null,         _null,
+    _null,   _null,    _null, _null,
 
 };
