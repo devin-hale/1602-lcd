@@ -3,29 +3,30 @@
 #define AHB1ENR ((volatile uint32_t *)0x40023830)
 
 struct gpio {
-  volatile uint32_t MODER, OTYPER, OSPEEDR, PUPDR, IDR, ODR, BSRR, LCKR, AFR[2];
+    volatile uint32_t MODER, OTYPER, OSPEEDR, PUPDR, IDR, ODR, BSRR, LCKR,
+        AFR[2];
 };
 #define GPIOB ((volatile struct gpio *)GPIO)
 
 void rcc_init(void) { *AHB1ENR |= 0x2; }
 void gpio_init(void) {
-  GPIOB->MODER &= ~(0x3U);
-  GPIOB->MODER |= (0x1U);
+    GPIOB->MODER &= ~(0x3U);
+    GPIOB->MODER |= (0x1U);
 }
 
 static inline void spin(volatile uint32_t count) {
-  while (count--)
-    asm("nop");
+    while (count--)
+        asm("nop");
 }
 
 int main(void) {
-  rcc_init();
-  gpio_init();
-  for (;;) {
-    spin(555555);
-    GPIOB->ODR &= ~(0x1U);
-    spin(555555);
-    GPIOB->ODR |= 0x1U;
-  }
-  return 0;
+    rcc_init();
+    gpio_init();
+    for (;;) {
+        spin(555555);
+        GPIOB->ODR &= ~(0x1U);
+        spin(555555);
+        GPIOB->ODR |= 0x1U;
+    }
+    return 0;
 }
