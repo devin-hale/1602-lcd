@@ -15,11 +15,9 @@ int main() {
     gpio_init(GPIOB, 14, GPIO_MODE_OUTPUT);
     for (;;) {
         spin(999999);
-        GPIO(GPIOB)->odr &= ~(0x1U);
-        GPIO(GPIOB)->odr &= ~(0x1U << 14);
+		gpio_set(GPIOB, 0);
         spin(999999);
-        GPIO(GPIOB)->odr |= (0x1U);
-        GPIO(GPIOB)->odr |= (0x1U << 14);
+		gpio_reset(GPIOB, 0);
     }
     return 0;
 }

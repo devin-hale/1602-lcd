@@ -31,3 +31,5 @@ typedef enum {
 } gpio_mode;
 
 void gpio_init(gpio_port, uint8_t, gpio_mode);
+void gpio_set(gpio_port, uint8_t);
+void gpio_reset(gpio_port, uint8_t);
