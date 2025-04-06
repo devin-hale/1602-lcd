@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #define GPIO_BASE 0x40020000
 
@@ -31,8 +31,5 @@ typedef enum {
     GPIO_MODE_ANALOG
 } gpio_mode;
 
-void gpio_init(gpio_port, uint8_t, gpio_mode);
-void gpio_set(gpio_port, uint8_t);
-void gpio_reset(gpio_port, uint8_t);
-
-
+void gpio_init(gpio_port pt, uint8_t pn, gpio_mode m);
+void gpio_write(gpio_port pt, uint8_t pn, bool state);
