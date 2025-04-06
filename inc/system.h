@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #define SYSTICK_CLOCK_SPEED ((uint32_t)18750000)
@@ -13,3 +14,4 @@ struct systick {
 void _systick();
 void systick_init(uint32_t);
 void delay(uint32_t ms);
+bool timer_expired(uint32_t *exp, uint32_t period);
