@@ -31,5 +31,7 @@ typedef enum {
     GPIO_MODE_ANALOG
 } gpio_mode;
 
+void gpio_set_mode(gpio_port pt, uint8_t pn, gpio_mode m);
+void gpio_set_af(gpio_port pt, uint8_t pn, uint8_t af_num);
 void gpio_init(gpio_port pt, uint8_t pn, gpio_mode m);
 void gpio_write(gpio_port pt, uint8_t pn, bool state);
