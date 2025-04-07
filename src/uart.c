@@ -1,8 +1,10 @@
-#include "uart.h"
+#include <stddef.h>
+#include <stdint.h>
+
 #include "gpio.h"
 #include "main.h"
 #include "rcc.h"
-#include <stdint.h>
+#include "uart.h"
 
 void uart_init(struct uart *uart, uint32_t baud) {
     uint8_t af = 7;
@@ -38,3 +40,16 @@ void uart_init(struct uart *uart, uint32_t baud) {
     uart->BRR = FREQ / baud;
     uart->CR1 |= BIT(13) | BIT(2) | BIT(3);
 };
+
+inline int uart_read_ready(struct uart *uart) { return uart->SR & BIT(5); }
+
+inline uint8_t uart_read_byte(struct uart *uart) { return uart->DR & 0xFF; }
+
+inline void uart_write_byte(struct uart *uart, uint8_t byte) {
+    uart->DR = byte;
+    while ((uart->SR & BIT(7)) == 0) asm("nop");
+}
+
+inline void uart_write_buf(struct uart *uart, char *buf, size_t len) {
+    while (len-- > 0) uart_write_byte(uart, *(uint8_t *)buf++);
+}
