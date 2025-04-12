@@ -40,6 +40,7 @@ target_compile_options(${ELF} PUBLIC
 	# nano = pruned down standard lib
   	-specs=nano.specs 
   	-specs=nosys.specs
+	-I/usr/include
 
 	# -- ARM Options --
   	-mthumb # compressed 16bit thumb state
