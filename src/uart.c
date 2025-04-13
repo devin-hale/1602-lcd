@@ -1,10 +1,9 @@
-#include <stddef.h>
-#include <stdint.h>
-
+#include "uart.h"
 #include "gpio.h"
 #include "main.h"
 #include "rcc.h"
-#include "uart.h"
+#include <stddef.h>
+#include <stdint.h>
 
 void uart_init(struct uart *uart, uint32_t baud) {
     uint8_t af = 7;

@@ -20,8 +20,10 @@ target_include_directories(${ELF}
 
 target_link_options(${ELF} PUBLIC
 	-T${PROJECT_SOURCE_DIR}/linker.ld # specify linker script
-	-mthumb
-	-mcpu=cortex-m4
+	-nostartfiles
+	--specs=nano.specs
+	-lc
+	-lgcc
 	-Wl,--no-warn-rwx-segment
 	-Wl,--gc-sections # prune unused code, requires -ffunction-sections and -fdata-sections flag in compiler
 	-Wl,-Map=${PROJECT_NAME}.map # creates section mapping for debugging
@@ -29,18 +31,14 @@ target_link_options(${ELF} PUBLIC
 
 target_compile_options(${ELF} PUBLIC
 	# -- General Options --
-  	-Wall 
   	-g3 # debug information level 3
-  	-Os # optimize for size
+	-Os # optimize for size
 	# place each function or data item into its own section
 	# allows for optimization in linkage
 	-ffunction-sections
   	-fdata-sections
-	# specifies gnu libaries to link against
-	# nano = pruned down standard lib
-  	-specs=nano.specs 
-  	-specs=nosys.specs
-	-I/usr/include
+	-std=gnu11
+	-I/usr/arm-none-eabi/include
 
 	# -- ARM Options --
   	-mthumb # compressed 16bit thumb state

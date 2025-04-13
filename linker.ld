@@ -4,8 +4,8 @@ MEMORY
 	flash (rx) : ORIGIN = 0x08000000, LENGTH = 512K
     sram (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
-_Min_Heap_Size = 0x400;
-_Min_Stack_Size = 0x900;
+_Min_Heap_Size = 0x200;
+_Min_Stack_Size = 0x400;
 _estack = ORIGIN(sram) + LENGTH(sram);
 
 SECTIONS {
@@ -52,6 +52,8 @@ SECTIONS {
 	.dynamic :
     {
         . = ALIGN(8);
+		PROVIDE ( end = . );
+		PROVIDE ( _end = . );
 		. = . + _Min_Heap_Size;
 		. = . + _Min_Stack_Size;
 		. = ALIGN(8);
