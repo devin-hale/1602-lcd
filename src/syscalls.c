@@ -1,18 +1,9 @@
-#include "uart.h"
-#include <sys/stat.h>
-
-int __io_putchar(int ch) {
-	uart_write_buf(UART3, (char *)&ch, 1);
-	return ch;
-}
+#include "hal.h"
+#include <stddef.h>
 
 int _write(int fd, char *ptr, int len) {
     (void)fd, (void)ptr, (void)len;
-    if (fd == 1) {
-		for (int i = 0; i < len; i++) {
-			__io_putchar(ptr[i]);
-		}
-	};
+	if (fd == 1) uart_write_buf(UART_DEBUG, ptr, (size_t) len);
     return -1;
 }
 
@@ -23,10 +14,10 @@ int _fstat(int fd, struct stat *st) {
 }
 
 void *_sbrk(int incr) {
-    extern char _ebss;
+    extern char _end;
     static unsigned char *heap = NULL;
     unsigned char *prev_heap;
-    if (heap == NULL) heap = (unsigned char *)&_ebss;
+    if (heap == NULL) heap = (unsigned char *)&_end;
     prev_heap = heap;
     heap += incr;
     return prev_heap;
@@ -85,3 +76,7 @@ int mkdir(const char *path, mode_t mode) {
     (void)path, (void)mode;
     return -1;
 }
+
+void _init() {}
+
+void __libc_init_array(){};

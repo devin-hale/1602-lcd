@@ -1,18 +1,16 @@
-ENTRY(_reset)
+ENTRY(Reset_Handler)
 MEMORY
 {
 	flash (rx) : ORIGIN = 0x08000000, LENGTH = 512K
     sram (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
-_Min_Heap_Size = 0x200;
-_Min_Stack_Size = 0x400;
 _estack = ORIGIN(sram) + LENGTH(sram);
 
 SECTIONS {
-	.vector_table :
+	.vector :
 	{
 		. = ALIGN(4);
-		KEEP(*(.vector_table))
+		KEEP(*(.isr_vector))
 		. = ALIGN(4);
 	} >flash
 
@@ -39,7 +37,7 @@ SECTIONS {
         _edata = .;
         . = ALIGN(4);
     } > sram AT > flash
-	_si_data = LOADADDR(.data);
+	_sidata = LOADADDR(.data);
 
     .bss : {
         . = ALIGN(4);
@@ -49,13 +47,6 @@ SECTIONS {
         _ebss = .;
     } >sram
 
-	.dynamic :
-    {
-        . = ALIGN(8);
-		PROVIDE ( end = . );
-		PROVIDE ( _end = . );
-		. = . + _Min_Heap_Size;
-		. = . + _Min_Stack_Size;
-		. = ALIGN(8);
-    } >sram
+	PROVIDE ( end = . );
+	PROVIDE ( _end = . );
 }

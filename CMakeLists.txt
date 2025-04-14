@@ -11,17 +11,23 @@ set(ELF firmware.elf)
 enable_language(ASM)
 
 file(GLOB_RECURSE sources src/*.c)
-add_executable(${ELF} ${sources})
+add_executable(${ELF}
+	${sources}
+	${PROJECT_SOURCE_DIR}/vendor/cmsis-device-f4/Source/Templates/gcc/startup_stm32f446xx.s
+)
 
 target_include_directories(${ELF}
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/inc
+	${PROJECT_SOURCE_DIR}/vendor/CMSIS_5/CMSIS/Core/Include
+	${PROJECT_SOURCE_DIR}/vendor/cmsis-device-f4/Include
 )
 
 target_link_options(${ELF} PUBLIC
 	-T${PROJECT_SOURCE_DIR}/linker.ld # specify linker script
 	-nostartfiles
-	--specs=nano.specs
+	--specs nano.specs
+	-nostdlib
 	-lc
 	-lgcc
 	-Wl,--no-warn-rwx-segment
@@ -37,7 +43,6 @@ target_compile_options(${ELF} PUBLIC
 	# allows for optimization in linkage
 	-ffunction-sections
   	-fdata-sections
-	-std=gnu11
 	-I/usr/arm-none-eabi/include
 
 	# -- ARM Options --
@@ -62,3 +67,4 @@ target_compile_options(${ELF} PUBLIC
 )
 
 file(COPY ${CMAKE_SOURCE_DIR}/openocd/openocd.cfg DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/openocd/debug.cfg DESTINATION ${CMAKE_BINARY_DIR})
