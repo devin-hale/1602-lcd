@@ -7,7 +7,7 @@
 
 #include "stm32f446xx.h"
 
-#define FREQ 16000000 // CPU frequency, 16 Mhz
+#define FREQ 18750000 // CPU frequency, 16 Mhz
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
 #define PINNO(pin) (pin & 255)
@@ -21,7 +21,6 @@ static inline void spin(volatile uint32_t count) {
 enum { GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG };
 
 static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
-    (void)pin;
     GPIO_TypeDef *gpio = GPIO(PINBANK(pin)); // GPIO bank
     int n = PINNO(pin);                      // Pin number
     RCC->AHB1ENR |= BIT(PINBANK(pin));                // Enable GPIO clock
@@ -85,13 +84,4 @@ static inline int uart_read_ready(USART_TypeDef *uart) {
 
 static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
     return (uint8_t)(uart->DR & 255);
-}
-
-static inline bool timer_expired(volatile uint32_t *t, uint32_t prd,
-                                 uint32_t now) {
-    if (now + prd < *t) *t = 0;                   // Time wrapped? Reset timer
-    if (*t == 0) *t = now + prd;                  // Firt poll? Set expiration
-    if (*t > now) return false;                   // Not expired yet, return
-    *t = (now - *t) > prd ? now + prd : *t + prd; // Next expiration time
-    return true;                                  // Expired, return true
 }
