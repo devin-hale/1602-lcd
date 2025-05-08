@@ -57,7 +57,7 @@ void led_set_flash_rate(user_led* led, uint32_t ms) {
 
 int handle_flashing(user_led *led) {
     if (led->active) {
-        if (timer_expired(&led->flash_timer, led->flash_rate)) {
+        if (timer_expired_ms(&led->flash_timer, led->flash_rate)) {
             led_state_toggle(led);
         }
     }

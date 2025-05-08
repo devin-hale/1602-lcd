@@ -21,11 +21,25 @@ static inline void spin(volatile uint32_t count) {
 enum { GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG };
 
 static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
-    GPIO_TypeDef *gpio = GPIO(PINBANK(pin)); // GPIO bank
-    int n = PINNO(pin);                      // Pin number
-    RCC->AHB1ENR |= BIT(PINBANK(pin));                // Enable GPIO clock
-    gpio->MODER &= ~(3U << (n * 2));       // Clear existing setting
-    gpio->MODER |= (mode & 3U) << (n * 2); // Set new mode
+    GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
+    int n = PINNO(pin);
+    RCC->AHB1ENR |= BIT(PINBANK(pin));
+    gpio->MODER &= ~(3U << (n * 2));
+    gpio->MODER |= (mode & 3U) << (n * 2);
+}
+
+static inline void gpio_set_pupdr(uint16_t pin, uint8_t mode) {
+    GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
+    int n = PINNO(pin);
+    gpio->PUPDR &= ~(3U << (n * 2));
+    gpio->PUPDR |= (mode & 3U) << (n * 2);
+}
+
+static inline void gpio_set_otyper(uint16_t pin, bool state) {
+    GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
+    int n = PINNO(pin);
+    gpio->OTYPER &= ~(3U << (n));
+    gpio->OTYPER |= ((uint32_t)state << n);
 }
 
 static inline void gpio_set_af(uint16_t pin, uint8_t af_num) {
@@ -84,4 +98,65 @@ static inline int uart_read_ready(USART_TypeDef *uart) {
 
 static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
     return (uint8_t)(uart->DR & 255);
+}
+
+#define I2C_1 ((I2C_TypeDef *)I2C1_BASE)
+
+static inline void i2c_init_master(I2C_TypeDef *i2c) {
+    uint8_t af = 4;
+    uint8_t pupdr = 1; // pull-up
+
+    uint16_t scl = 0, sda = 0;
+    if (i2c == I2C_1) {
+        RCC->APB2ENR |= BIT(1);
+        RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
+        scl = PIN('B', 8);
+        sda = PIN('B', 9);
+    }
+
+    gpio_set_mode(scl, GPIO_MODE_AF);
+    gpio_set_af(scl, af);
+    gpio_set_pupdr(scl, pupdr);
+    gpio_set_otyper(scl, 1);
+
+    gpio_set_mode(sda, GPIO_MODE_AF);
+    gpio_set_af(sda, af);
+    gpio_set_pupdr(sda, pupdr);
+    gpio_set_otyper(sda, 1);
+
+    i2c->CR1 &= ~I2C_CR1_PE;
+
+    i2c->CR2 = 16;
+    // scl master mode clock
+    // T_high = CCR * T_periph_clock
+    // - Target freq is 100KHz, so period is (1/100000), or 10us
+    // - T_high + T_low == T, so T_high == 5us
+    // Periph clock above is 16mhz, so period is (1/16,000,000)
+    // (5e-6)/(6.25e-8) = 80 (0x50)
+    i2c->CCR = 0x50;
+    // max rise time
+    // standard mode == 1000 ns (1000e-9)
+    // from reference, MAX_RISE/T_PERIPH_CLOCK = TRISE
+    // (1000e-9)/(6.25e-8) = 16 (0x10)
+    i2c->TRISE = 0x10;
+
+    i2c->CR1 = I2C_CR1_PE;
+}
+
+static inline void i2c_write(I2C_TypeDef *i2c, uint8_t addr, uint8_t *data,
+                             uint8_t len) {
+    // generate start cond
+    i2c->CR1 |= I2C_CR1_START;
+    while (!(i2c->SR1 & I2C_SR1_SB)) {};
+
+    i2c->DR = (uint32_t)addr << 1;
+    while (!(i2c->SR1 & I2C_SR1_ADDR)) {};
+    (void)i2c->SR2;
+
+    for (uint8_t i = 0; i < len; i++) {
+        i2c->DR = data[i];
+        while (!(i2c->SR1 & I2C_SR1_TXE)) {};
+    }
+
+    i2c->CR1 |= I2C_CR1_STOP;
 }
