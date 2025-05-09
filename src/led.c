@@ -20,12 +20,12 @@ user_led *init_led(uint16_t pin, led_mode m, led_state s) {
     if (led_buf_count >= USER_LED_MAX) return NULL;
     user_led *led = &led_buf[led_buf_count++];
     led->active = true;
-	led->mode = m;
+    led->mode = m;
     led->flash_rate = DEFAULT_FLASH_RATE;
     led->pin = pin;
-	led->state = LED_STATE_OFF;
+    led->state = LED_STATE_OFF;
     gpio_set_mode(pin, GPIO_MODE_OUTPUT);
-	led_set_state(led, s);
+    led_set_state(led, s);
     return led;
 }
 
@@ -51,9 +51,7 @@ int led_state_toggle(user_led *led) {
     return 0;
 }
 
-void led_set_flash_rate(user_led* led, uint32_t ms) {
-	led->flash_rate = ms;
-}
+void led_set_flash_rate(user_led *led, uint32_t ms) { led->flash_rate = ms; }
 
 int handle_flashing(user_led *led) {
     if (led->active) {
@@ -64,20 +62,24 @@ int handle_flashing(user_led *led) {
     return -1;
 }
 
+void handle_user_led_state(user_led *led) {
+    if (led->active) {
+        switch (led->mode) {
+        case LED_MODE_SOLID:
+            break;
+        case LED_MODE_FLASHING_ON:
+            handle_flashing(led);
+            break;
+        case LED_MODE_FLASHING_OFF:
+            if (led->state == LED_STATE_ON) led_set_state(led, LED_STATE_OFF);
+            break;
+        }
+    }
+}
+
 void handle_led_states() {
     for (int i = 0; i < led_buf_count; i++) {
         user_led *led = &led_buf[i];
-        if (led->active) {
-            switch (led->mode) {
-            case LED_MODE_SOLID:
-                break;
-            case LED_MODE_FLASHING_ON:
-                handle_flashing(led);
-                break;
-			case LED_MODE_FLASHING_OFF:
-				if(led->state == LED_STATE_ON) led_set_state(led, LED_STATE_OFF);
-				break;
-            }
-        }
+        handle_user_led_state(led);
     }
 }
