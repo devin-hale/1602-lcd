@@ -42,9 +42,8 @@ void lcd_init(lcd_typedef *lcd, I2C_TypeDef *i2c) {
     lcd_command(lcd, LCD_FUNCTION_SET1);
     lcd_command(lcd, LCD_FUNCTION_SET2);
     lcd_command(lcd, LCD_4BIT_2LINE_MODE);
-    lcd_command(lcd, 0x0C);
-    lcd_command(lcd, 0x80);
-    lcd_write_string(lcd, "hello");
+    lcd_command(lcd, LCD_DISP_ON_CURS_OFF);
+    lcd_command(lcd, LCD_SET_ROW1_COL1);
 }
 
 // static void lcd_write(lcd_typedef *lcd, uint8_t cmd) {
@@ -90,3 +89,53 @@ static void lcd_data(lcd_typedef *lcd, uint8_t data) {
 static void lcd_write_string(lcd_typedef *lcd, char *str) {
     while (*str) { lcd_data(lcd, *str++); }
 };
+
+void reverse_str(char *dest, char *str, int length) {
+  length--;
+  int i = 0;
+  while (length >= 0) {
+    dest[i++] = str[length--];
+  }
+  dest[i] = '\0';
+}
+
+void itos(char *dest, int num) {
+  if (num == 0) {
+    dest[0] = '0';
+    dest[1] = '\0';
+    return;
+  }
+  char str[255];
+  int neg = num < 0 ? 1 : 0;
+  if (neg) {
+    num = ~num + 1;
+  }
+  int i = 0;
+  while (num != 0) {
+    int rem = num % 10;
+    str[i++] = (char)rem + '0';
+    num /= 10;
+  }
+  if (neg) {
+    str[i++] = '-';
+  }
+  str[i] = '\0';
+  reverse_str(dest, str, i);
+}
+
+static void clear_and_write(lcd_typedef *lcd, char *str) {
+    lcd_command(lcd, LCD_CLEAR_DISPLAY);
+    lcd_command(lcd, LCD_SET_ROW1_COL1);
+    lcd_write_string(lcd, str);
+}
+
+static uint8_t count = 0;
+static volatile uint32_t timer;
+void decrement_count(lcd_typedef *lcd) {
+    if (timer_expired_ms(&timer, 1000)) {
+        if (count > 5) { count = 5; }
+        char countstr[8];
+        itos(countstr, count--);
+        clear_and_write(lcd, countstr);
+    }
+}

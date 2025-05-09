@@ -11,5 +11,6 @@ typedef struct lcd_typedef {
 } lcd_typedef;
 
 void lcd_init(lcd_typedef *, I2C_TypeDef *);
+void decrement_count(lcd_typedef *lcd);
 
 #endif

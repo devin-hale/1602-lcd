@@ -27,6 +27,7 @@ target_link_options(${ELF} PUBLIC
 	-T${PROJECT_SOURCE_DIR}/linker.ld # specify linker script
 	-nostartfiles
 	--specs nano.specs
+	--specs=nosys.specs
 	-nostdlib
 	-lc
 	-lgcc

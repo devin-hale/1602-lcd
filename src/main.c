@@ -27,7 +27,10 @@ int main() {
     lcd.addr = 0x27;
     lcd_init(&lcd, I2C_1);
 
-    while (1) { handle_led_states(); }
+    while (1) { 
+		handle_led_states(); 
+		decrement_count(&lcd);
+	}
     //    for (;;) {
     //
     //        if (timer_expired(&timer, period, s_ticks)) {
