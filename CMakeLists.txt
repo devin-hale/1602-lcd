@@ -26,11 +26,8 @@ target_include_directories(${ELF}
 target_link_options(${ELF} PUBLIC
 	-T${PROJECT_SOURCE_DIR}/linker.ld # specify linker script
 	-nostartfiles
-	--specs nano.specs
+	--specs=nano.specs
 	--specs=nosys.specs
-	-nostdlib
-	-lc
-	-lgcc
 	-Wl,--no-warn-rwx-segment
 	-Wl,--gc-sections # prune unused code, requires -ffunction-sections and -fdata-sections flag in compiler
 	-Wl,-Map=${PROJECT_NAME}.map # creates section mapping for debugging
@@ -53,7 +50,6 @@ target_compile_options(${ELF} PUBLIC
 	# 'soft' for software, 'hard' for hardware
   	-mfloat-abi=soft 
   	-mlittle-endian  # obvious, set to little endian
-
 	# -- Warning/Error Options ---
 	-Wall
 	-Wextra

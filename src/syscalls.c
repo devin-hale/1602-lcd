@@ -1,9 +1,10 @@
 #include "hal.h"
 #include <stddef.h>
+#include <sys/stat.h>
 
-int _write(int fd, char *ptr, int len) {
-    (void)fd, (void)ptr, (void)len;
-	if (fd == 1) uart_write_buf(UART_DEBUG, ptr, (size_t) len);
+int _write(int fd, char *buf, int len) {
+    (void)fd, (void)buf, (void)len;
+    if (fd == 1) uart_write_buf(UART_DEBUG, buf, (size_t)len);
     return -1;
 }
 
@@ -52,9 +53,10 @@ void _kill(int pid, int sig) { (void)pid, (void)sig; }
 
 int _getpid(void) { return -1; }
 
-int _read(int fd, char *ptr, int len) {
-    (void)fd, (void)ptr, (void)len;
-    return -1;
+int _read(int fd, char *buf, int len) {
+    (void)fd;
+    for (int i = 0; i < len; i++) { buf[i] = uart_read_byte(UART_DEBUG); }
+    return len;
 }
 
 int _link(const char *a, const char *b) {
@@ -79,4 +81,4 @@ int mkdir(const char *path, mode_t mode) {
 
 void _init() {}
 
-void __libc_init_array(){};
+void __libc_init_array() {};
