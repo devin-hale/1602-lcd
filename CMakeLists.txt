@@ -28,6 +28,8 @@ target_link_options(${ELF} PUBLIC
 	-nostartfiles
 	--specs=nano.specs
 	--specs=nosys.specs
+	-mcpu=cortex-m4
+	-mthumb
 	-Wl,--no-warn-rwx-segment
 	-Wl,--gc-sections # prune unused code, requires -ffunction-sections and -fdata-sections flag in compiler
 	-Wl,-Map=${PROJECT_NAME}.map # creates section mapping for debugging
