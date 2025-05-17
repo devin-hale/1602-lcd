@@ -2,10 +2,10 @@
 #include "hal.h"
 #include "systick.h"
 
-#define USER_LED_MAX 16
+#define USER_LED_MAX 32
 #define DEFAULT_FLASH_RATE 1000 // ms
 
-static led_typedef led_buf[16];
+static led_typedef led_buf[USER_LED_MAX];
 static uint8_t led_buf_count = 0;
 
 led_typedef *get_led(uint16_t pin) {
