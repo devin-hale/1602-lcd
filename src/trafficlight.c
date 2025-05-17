@@ -1,8 +1,6 @@
 #include "trafficlight.h"
 #include "led.h"
 
-#define EVENT_BUF_SIZE 32
-
 static bool event_buf_full(struct traffic_light *tl) {
     return ((tl->head + 1) % EVENT_BUF_SIZE) == tl->tail;
 };

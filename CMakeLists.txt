@@ -28,6 +28,7 @@ target_link_options(${ELF} PUBLIC
 	-nostartfiles
 	--specs=nano.specs
 	--specs=nosys.specs
+	-nostdlib
 	-mcpu=cortex-m4
 	-mthumb
 	-Wl,--no-warn-rwx-segment

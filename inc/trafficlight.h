@@ -26,6 +26,8 @@ enum tl_event_err {
 	TL_EVENT_ERR_RED_TO_YELLOW
 };
 
+#define EVENT_BUF_SIZE 32
+
 struct traffic_light {
     enum tl_state state;
 
@@ -33,11 +35,9 @@ struct traffic_light {
     led_typedef *y;
     led_typedef *g;
 
-    enum tl_event event_buf[32];
+    enum tl_event event_buf[EVENT_BUF_SIZE];
     uint8_t head;
     uint8_t tail;
-
-    uint8_t timer;
 };
 
 void tl_init(struct traffic_light *tl, uint16_t pin_red, uint16_t pin_yellow, uint16_t pin_green);

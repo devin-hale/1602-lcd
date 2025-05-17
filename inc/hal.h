@@ -7,7 +7,7 @@
 
 #include "stm32f446xx.h"
 
-#define FREQ 18750000 // CPU frequency, 16 Mhz
+#define FREQ 16000000 // CPU frequency, 16 Mhz
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
 #define PINNO(pin) (pin & 255)
