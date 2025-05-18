@@ -1,3 +1,3 @@
 # Traffic Light Controller
 
-[![Watch the video](repo/image.jpg)](repo/video.mov)
+<img src="/repo/image.jpg" alt="image preview" width="300" height="auto">
