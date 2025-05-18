@@ -1,6 +1,5 @@
 #include "lcd.h"
 #include "hal.h"
-#include "led.h"
 #include "systick.h"
 
 #define COMMAND 0x00
@@ -124,19 +123,8 @@ void itos(char *dest, int num) {
   reverse_str(dest, str, i);
 }
 
-static void clear_and_write(lcd_typedef *lcd, char *str) {
+void clear_and_write(lcd_typedef *lcd, char *str) {
     lcd_command(lcd, LCD_CLEAR_DISPLAY);
     lcd_command(lcd, LCD_SET_ROW1_COL1);
     lcd_write_string(lcd, str);
-}
-
-static uint8_t count = 0;
-static volatile uint32_t timer;
-void decrement_count(lcd_typedef *lcd) {
-    if (timer_expired_ms(&timer, 1000)) {
-        if (count > 5) { count = 5; }
-        char countstr[8];
-        itos(countstr, count--);
-        clear_and_write(lcd, countstr);
-    }
 }

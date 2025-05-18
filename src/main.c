@@ -22,19 +22,14 @@ int main() {
     lcd_typedef lcd = {.addr = 0x27};
     lcd_init(&lcd, I2C_1);
 
-    struct traffic_light tl;
-    uint16_t ping = PIN('G', 0);
-    uint16_t piny = PIN('D', 1);
-    uint16_t pinr = PIN('D', 0);
-    tl_init(&tl, pinr, piny, ping);
-    tl_set_default_state(&tl, TL_STATE_GREEN);
-    tl_handle_state(&tl);
-
+    struct traffic_light_controller tlc = {.lcd = &lcd};
+    tlc_reset(&tlc);
+	tlc_set_flow(&tlc, FLOW_NTS);
     gpio_write(LED_PIN_RED, false);
 
     while (1) {
+        tlc_handle_state(&tlc);
         handle_led_states();
-        decrement_count(&lcd);
     }
     return 0;
 }
