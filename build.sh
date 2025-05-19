@@ -34,6 +34,10 @@ elif [[ "$CMD" == "docker" ]]; then
 	fi
 
 	$DOCKER run -it --rm -v .:/src $IMAGE_NAME /bin/bash -c "cd /src && ./build.sh"
+else
+	cmake -B ./build && \
+	cd build && \
+	make
 fi
 
 cd ..
