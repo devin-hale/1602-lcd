@@ -22,15 +22,6 @@ A minimal implementation of a traffic light controller simulation using the STM3
 | Yellow LED | 4 |
 | 220 Ohm Resistor | 12 |
 
-## Component Documentation
-
-### Led
-    (wip)
-### Traffic Light
-    (wip)
-### Traffic Light Controller
-    (wip)
-
 ## Takeaways
 - Linker flags `-mcpu=cortex-m4` and `-mthumb` need to be set. Setting them on the compiler doesn't necessarily set them on the linker. Lost a lot of time to this.
 - I need to get more comfortable with the debugger. Probably one of those things where I should probably suck it up and use the GUI for now.
